@@ -4,16 +4,16 @@ const request = require('request')
 const queryString = require('query-string')
 
 // Builds the request URL from word and parameters
-const createRequestUrl = (url, word, { max = 20, s: sp = '', ...rest }) => url + queryString.stringify({
+const createRequestUrl = (url, word, { max = 20, s: sp = '' }) => url + queryString.stringify({
     max,
-    sp: sp + '*', ...rest,
-    ml: word
+    ml: word,
+    sp: sp ? sp + '*' : ''
 })
 
 // Make request - displays help menu if no word is passed
-const makeRequest = (url, word, parameters, handleResults) => {
+const makeRequest = (url, word, args, handleResults) => {
     word
-        ? request(url, (error, response, results) => handleResults(results, parameters))
+        ? request(url, (error, response, results) => handleResults(results, args))
         : cli.showHelp()
 }
 
@@ -33,7 +33,6 @@ const handleResults = (results, args) => {
         a: list => list.sort(),
         c: list => list.map(word => word.toUpperCase(word))
     }
-
     if (results !== '[]') {
         JSON.parse(results)
             .map(result => result.word)
@@ -67,9 +66,15 @@ const cli = meow(`
 
 // Initializing the important stuff
 const url = 'http://api.datamuse.com/words?'
+
+
 const word = cli.input[0] ? cli.input[0] : ''
 const args = cli.flags
 const requestUrl = createRequestUrl(url, word, args)
 
 // Make request, passing the callback 'handleResults' function
 makeRequest(requestUrl, word, args, handleResults)
+
+module.exports.url = url
+module.exports.createRequestUrl = createRequestUrl
+module.exports.handleResults = handleResults
