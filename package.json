@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "babel src --out-file index.js",
-    "build:watch": "babel src -d dist --watch",
+    "build:watch": "babel src --out-file index.js --watch",
     "test": "mocha --compilers js:babel-core/register ./test/test.js"
   },
   "repository": {

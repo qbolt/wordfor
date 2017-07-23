@@ -3,37 +3,41 @@ const meow = require('meow')
 const request = require('request')
 const queryString = require('query-string')
 
-// Custom function for applying argument functions to results
-Array.prototype.applyArguments = function(args, argumentFunctions) {
-    return Object
-        .keys(args)
-        .filter(argument => argumentFunctions[argument] !== undefined)
-        .reduce((prev, argument) => argumentFunctions[argument](this), [...this])
+// Builds the request URL from word and parameters
+const createRequestUrl = (url, word, { max = 20, s: sp = '', ...rest }) => url + queryString.stringify({
+    max,
+    sp: sp + '*', ...rest,
+    ml: word
+})
+
+// Make request - displays help menu if no word is passed
+const makeRequest = (url, word, parameters, handleResults) => {
+    word
+        ? request(url, (error, response, results) => handleResults(results, parameters))
+        : cli.showHelp()
 }
 
-const url = 'http://api.datamuse.com/words?'
-
-// Builds the request URL from word and parameters
-const createRequestUrl = (word, { max = 20, s: sp = '', ...rest }) => url + queryString.stringify({ max, sp: sp + '*', ...rest, ml: word })
-
-// Makes request and passes results to handleResults()
-const makeRequest = (word, parameters) => request(createRequestUrl(word, parameters), (error, response, results) => handleResults(results, parameters))
-
-// Init request - displays help menu if no word is passed
-const initRequest = (word = '', parameters) => word === '' ? cli.showHelp() : makeRequest(word, parameters)
-
-// Functions corresponding to possible arguments intended to manipulate list after request
-const argumentFunctions = {
-    a: list => list.sort(),
-    c: list => list.map(word => word.toUpperCase(word))
+// Custom function for applying argument functions to results
+Array.prototype.applyArguments = function(args, argFunctions) {
+    return Object
+        .keys(args)
+        .filter(argument => argFunctions[argument] !== undefined)
+        .reduce((prev, argument) => argFunctions[argument](this), [...this])
 }
 
 // Extract words, apply argumentFunctions, and log results
-const handleResults = (results, parameters) => {
+const handleResults = (results, args) => {
+
+    // Functions corresponding to possible arguments intended to manipulate list after request
+    const argFunctions = {
+        a: list => list.sort(),
+        c: list => list.map(word => word.toUpperCase(word))
+    }
+
     if (results !== '[]') {
         JSON.parse(results)
             .map(result => result.word)
-            .applyArguments(parameters, argumentFunctions)
+            .applyArguments(args, argFunctions)
             .forEach(word => console.log(word))
     } else {
         console.log('No results found.')
@@ -61,5 +65,11 @@ const cli = meow(`
     }
 })
 
-// Initialize request, passing input and flags
-initRequest(cli.input[0], cli.flags)
+// Initializing the important stuff
+const url = 'http://api.datamuse.com/words?'
+const word = cli.input[0] ? cli.input[0] : ''
+const args = cli.flags
+const requestUrl = createRequestUrl(url, word, args)
+
+// Make request, passing the callback 'handleResults' function
+makeRequest(requestUrl, word, args, handleResults)
