@@ -11,7 +11,7 @@ describe('wordfor', () => {
         })
         it('creates word with starting letter parameter', () => {
             const url = wordfor.createRequestUrl(wordfor.url, 'word', { s: 'e' })
-            expect(url).to.equal('http://api.datamuse.com/words?max=20&ml=word&sp=e%2A')
+            expect(url).to.equal('http://api.datamuse.com/words?max=10&ml=word&sp=e%2A')
 
         })
     })

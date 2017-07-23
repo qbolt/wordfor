@@ -4,7 +4,7 @@ const request = require('request')
 const queryString = require('query-string')
 
 // Builds the request URL from word and parameters
-const createRequestUrl = (url, word, { max = 20, s: sp = '' }) => url + queryString.stringify({
+const createRequestUrl = (url, word, { max = 10, s: sp = '' }) => url + queryString.stringify({
     max,
     ml: word,
     sp: sp ? sp + '*' : ''
