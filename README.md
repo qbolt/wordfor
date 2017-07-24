@@ -18,6 +18,6 @@ $ npm install -g wordfor
       -s <char>, --start      Return words that start with specified letter
       -a, --alphabetize       Alphabetize results
       -c, --capitalize        Capitalize the results
+      -p, --proxy             Set your proxy
       -h, --help              Display helpful information
 ```
-

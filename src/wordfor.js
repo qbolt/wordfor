@@ -53,6 +53,7 @@ const cli = meow(`
         -s <char>, --start      Return words that start with specified letter
         -a, --alphabetize       Alphabetize results
         -c, --capitalize        Capitalize the results
+        -p, --proxy             Set your proxy
         -h, --help              Display helpful information
 `, {
     alias: {
@@ -60,6 +61,7 @@ const cli = meow(`
         s: '--start',
         a: '--alphabetize',
         c: '--capitalize',
+        p: '--proxy',
         h: '--help'
     }
 })
@@ -72,8 +74,13 @@ const word = cli.input[0] ? cli.input[0] : ''
 const args = cli.flags
 const requestUrl = createRequestUrl(url, word, args)
 
+const options = {
+  url: requestUrl,
+  proxy: args.p
+}
+
 // Make request, passing the callback 'handleResults' function
-makeRequest(requestUrl, word, args, handleResults)
+makeRequest(options, word, args, handleResults)
 
 module.exports.url = url
 module.exports.createRequestUrl = createRequestUrl
