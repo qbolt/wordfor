@@ -1,6 +1,6 @@
 {
   "name": "wordfor",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "A command-line application for finding synonyms.",
   "main": "index.js",
   "bin": {
@@ -18,7 +18,7 @@
     "type": "git",
     "url": "git+https://github.com/qbolt/wordfor.git"
   },
-  "author": "Quinton Bolt",
+  "author": "Quinton Bolt <bolt.quinton@yahoo.com> (http://quintonbolt.com)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/qbolt/wordfor/issues"

@@ -68,16 +68,15 @@ const cli = meow(`
 
 // Initializing the important stuff
 const url = 'http://api.datamuse.com/words?'
-
-
 const word = cli.input[0] ? cli.input[0] : ''
 const args = cli.flags
 const requestUrl = createRequestUrl(url, word, args)
 
-const options = {
-  url: requestUrl,
-  proxy: args.p
-}
+const options = Object.assign(
+  {},
+  { url: requestUrl },
+  cli.flags.p && { proxy: cli.flags.p }
+)
 
 // Make request, passing the callback 'handleResults' function
 makeRequest(options, word, args, handleResults)

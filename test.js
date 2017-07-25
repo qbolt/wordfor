@@ -5,7 +5,7 @@ const wordfor = require('.')
 
 describe('wordfor', () => {
     describe('createUrl()', () => {
-        it('creates word with max paramater', () => {
+        it('creates word with max parameter', () => {
             const url = wordfor.createRequestUrl(wordfor.url, 'word', { max: '5' })
             expect(url).to.equal('http://api.datamuse.com/words?max=5&ml=word&sp=')
         })
